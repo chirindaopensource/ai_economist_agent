@@ -83,7 +83,7 @@ For Application 2 (CRE Refinancing Stress), the layer executes a 2-state Markov-
 Below is a diagram which summarizes the proposed approach:
 
 <div align="center">
-  <img src="https://github.com/chirindaopensource/ai_economist_agent/blob/main/ai_economist_agent_ipo_main_3.png" alt="Pipeline Architecture" width="100%">
+  <img src="https://github.com/chirindaopensource/ai_economist_agent/blob/main/ai_economist_agent_ipo_main_7.png" alt="Pipeline Architecture" width="100%">
 </div>
 
 ## Features
