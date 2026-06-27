@@ -1,0 +1,917 @@
+# ==============================================================================
+# AI ECONOMIST AGENT: COMPLETE STUDY CONFIGURATION
+# Faithfully converted from study_config Python dictionary.
+# Revised to include all required parameters for faithful reproduction.
+# ==============================================================================
+
+# ==============================================================================
+# APPLICATION SCENARIOS (CRITICAL ADDITION)
+# ==============================================================================
+# Explicit scenario narratives for both applications (primary inputs to pipeline)
+application_scenarios:
+
+  application_1:
+    # string: Unique origin node identifier
+    scenario_id: "SCEN_APP1_INFLATION"
+    # int: Application index
+    application_number: 1
+    # string: Application label
+    title: "U.S. Inflation Persistence and Federal Reserve Policy"
+    # string: Sole input to Planner Agent
+    narrative_text: >-
+      Services inflation remains persistent in the U.S. economy while
+      labor-market cooling is gradual. The Federal Reserve keeps policy
+      restrictive, which lifts Treasury yields and slows real activity.
+    # str (ISO 8601): Creation time
+    created_timestamp: "2024-06-19T10:00:00Z"
+    # bool: Triggers agentic pipeline
+    analysis_required: true
+
+  application_2:
+    # string: Unique origin node identifier
+    scenario_id: "SCEN_APP2_CRE"
+    # int: Application index
+    application_number: 2
+    # string: Application label
+    title: "U.S. Commercial Real Estate Refinancing Stress"
+    # string: Sole input to Planner Agent
+    narrative_text: >-
+      Higher long-term interest rates and wider credit spreads create
+      refinancing pressure for U.S. commercial real estate borrowers.
+      The increase in borrowing costs can make existing debt harder to
+      roll over and can reduce demand for new lending. Banks may face
+      higher credit losses if property income is insufficient to absorb
+      refinancing costs.
+    # str (ISO 8601): Creation time
+    created_timestamp: "2024-06-19T10:00:00Z"
+    # bool: Triggers agentic pipeline
+    analysis_required: true
+
+
+# ==============================================================================
+# TARGET OUTPUTS FOR VALIDATION (CRITICAL ADDITION)
+# ==============================================================================
+# Expected outputs at key pipeline stages for reproduction validation
+
+target_retrieval_outputs:
+
+  # Top-6 evidence IDs for Application 1 (Tables 6 in paper), ranked by retrieval score
+  application_1_top6_evidence_ids:
+    - "EV_1161"   # "Credit losses reduce common equity capital and lower the stressed CET1 ratio." (confidence: 0.940)
+    - "EV_1321"   # "Declines in CRE values raise loss-given-default and can increase credit losses." (confidence: 0.939)
+    - "EV_1801"   # "China growth surprises transmit to global trade volumes through supply-chain and commodity channels." (confidence: 0.936)
+    - "EV_1571"   # "A more restrictive policy path usually lifts nominal yields, although the term premium may vary by regime." (confidence: 0.935)
+    - "EV_841"    # "Global oil supply shocks tend to raise headline inflation before the pass-through fades." (confidence: 0.933)
+    - "EV_721"    # "Funding stress and confidence effects can increase uninsured deposit outflows." (confidence: 0.932)
+
+  # Top-6 evidence IDs for Application 2 (Table 10 in paper), ranked by retrieval score
+  application_2_top6_evidence_ids:
+    - "EV_1967"   # "Funding stress and confidence effects can increase uninsured deposit outflows." (confidence: 0.939)
+    - "EV_2028"   # "Deposit outflows increase net cash outflows and reduce liquidity coverage ratios." (confidence: 0.938)
+    - "EV_2107"   # "Funding stress and confidence effects can increase uninsured deposit outflows." (confidence: 0.937)
+    - "EV_1197"   # "Funding stress and confidence effects can increase uninsured deposit outflows." (confidence: 0.931)
+    - "EV_628"    # "Deposit outflows increase net cash outflows and reduce liquidity coverage ratios." (confidence: 0.928)
+    - "EV_1267"   # "Funding stress and confidence effects can increase uninsured deposit outflows." (confidence: 0.926)
+
+
+# Expected model selections output by the Model-Selection Agent for each application
+expected_model_selections:
+  # string: Expected spec_id for Application 1
+  application_1_spec_id: "MSPEC_DSGE_LITE_004"
+  # string: Expected model family for Application 1
+  application_1_model_family: "DSGE"
+  # string: Expected implementation family for Application 1
+  application_1_implementation_family: "dsge_lite_runner"
+  # string: Expected execution tool for Application 1
+  application_1_execution_tool: "dsge_lite_runner"
+  # string: Expected spec_id for Application 2
+  application_2_spec_id: "MSPEC_REGIME_SWITCHING_005"
+  # string: Expected model family for Application 2
+  application_2_model_family: "Regime Switching"
+  # string: Expected implementation family for Application 2
+  application_2_implementation_family: "regime_switching_runner"
+  # string: Expected execution tool for Application 2
+  application_2_execution_tool: "regime_switching_runner"
+
+
+# Expected Judge Agent scores across all conditions and applications
+expected_judge_scores:
+
+  # Application 1 expected scores (Table 9 in paper)
+  application_1:
+
+    llm_only:
+      # float: Evidence grounding score (0-5)
+      evidence_grounding: 2.0
+      # float: Graph reasoning score (0-5)
+      graph_reasoning: 1.0
+      # float: Model grounding score (0-5); 0 because no model was executed
+      model_grounding: 0.0
+      # float: Numerical discipline score (0-5)
+      numerical_discipline: 5.0
+      # float: Economic coherence score (0-5)
+      economic_coherence: 4.0
+      # float: Audit traceability score (0-5)
+      audit: 2.0
+
+    rag_only:
+      # float: Evidence grounding score (0-5)
+      evidence_grounding: 5.0
+      # float: Graph reasoning score (0-5)
+      graph_reasoning: 1.0
+      # float: Model grounding score (0-5); 0 because no model was executed
+      model_grounding: 0.0
+      # float: Numerical discipline score (0-5)
+      numerical_discipline: 5.0
+      # float: Economic coherence score (0-5)
+      economic_coherence: 5.0
+      # float: Audit traceability score (0-5)
+      audit: 5.0
+
+    model_grounded_graphrag:
+      # float: Evidence grounding score (0-5)
+      evidence_grounding: 5.0
+      # float: Graph reasoning score (0-5)
+      graph_reasoning: 4.0
+      # float: Model grounding score (0-5); 5 because model was executed and output traced
+      model_grounding: 5.0
+      # float: Numerical discipline score (0-5)
+      numerical_discipline: 5.0
+      # float: Economic coherence score (0-5)
+      economic_coherence: 4.0
+      # float: Audit traceability score (0-5)
+      audit: 5.0
+
+  # Application 2 expected scores (Table 14 in paper)
+  application_2:
+
+    llm_only:
+      # float: Evidence grounding score (0-5)
+      evidence_grounding: 0.0
+      # float: Graph reasoning score (0-5)
+      graph_reasoning: 1.0
+      # float: Model grounding score (0-5); 0 because no model was executed
+      model_grounding: 0.0
+      # float: Numerical discipline score (0-5)
+      numerical_discipline: 5.0
+      # float: Economic coherence score (0-5)
+      economic_coherence: 4.0
+      # float: Audit traceability score (0-5)
+      audit: 2.0
+
+    rag_only:
+      # float: Evidence grounding score (0-5)
+      evidence_grounding: 5.0
+      # float: Graph reasoning score (0-5)
+      graph_reasoning: 1.0
+      # float: Model grounding score (0-5); 0 because no model was executed
+      model_grounding: 0.0
+      # float: Numerical discipline score (0-5)
+      numerical_discipline: 5.0
+      # float: Economic coherence score (0-5)
+      economic_coherence: 5.0
+      # float: Audit traceability score (0-5)
+      audit: 5.0
+
+    model_grounded_graphrag:
+      # float: Evidence grounding score (0-5)
+      evidence_grounding: 5.0
+      # float: Graph reasoning score (0-5)
+      graph_reasoning: 4.0
+      # float: Model grounding score (0-5); 5 because model was executed and output traced
+      model_grounding: 5.0
+      # float: Numerical discipline score (0-5)
+      numerical_discipline: 5.0
+      # float: Economic coherence score (0-5)
+      economic_coherence: 4.0
+      # float: Audit traceability score (0-5)
+      audit: 5.0
+
+
+# ==============================================================================
+# LLM AND AGENT EXECUTION SETTINGS
+# ==============================================================================
+# Local Inference Engine and Agent Determinism Parameters
+
+llm_execution_parameters:
+  # string: Model identifier specified in Appendix C, Table 16
+  model_name: "llama3.1:8b"
+  # string: Standard local Ollama/OpenAI-compatible endpoint
+  api_endpoint: "http://localhost:11434/v1/chat/completions"
+  # string: Explicit placeholder for local inference; no external API key used per study design
+  api_key: "local-null"
+  # int: Temperature set to 0 for greedy decoding to ensure deterministic generation (Appendix C, Table 16)
+  temperature: 0
+  # int: Seed set to 42 to fix the RNG state of the inference engine (Appendix C, Table 16)
+  seed: 42
+  # float: Top-p nucleus sampling parameter; set to 1.0 (disabled) when temperature is 0
+  top_p: 1.0
+  # int: Top-k sampling parameter; set to 1 (greedy) to strictly enforce deterministic token selection
+  top_k: 1
+  # bool: Hardware-level deterministic mode flag to mitigate floating-point non-determinism
+  deterministic_decoding: true
+  # int: Maximum output tokens per LLM agent call to prevent runaway generation during JSON output
+  max_tokens: 2048
+  # list[str]: Stop sequences to terminate generation past JSON schema closure
+  # (unspecified in manuscript; implementation choice)
+  stop_sequences:
+    - "\n\n\n"
+    - "```"
+
+
+# ==============================================================================
+# RAW UNPROCESSED INPUT DATA STRUCTURE SCHEMAS
+# ==============================================================================
+# Examples of raw data structures loaded into the Knowledge Graph pre-execution
+
+raw_data_schemas:
+
+  # Raw scenario input structure
+  raw_scenario:
+    - # string: Unique origin node identifier
+      scenario_id: "SCEN_APP1_INFLATION"
+      # int: Application index
+      application_number: 1
+      # string: Application label
+      application_name: "Application 1"
+      # string: Sole input to Planner Agent
+      narrative_text: >-
+        Services inflation remains persistent while labor-market cooling is
+        gradual. The Federal Reserve keeps policy restrictive, which lifts
+        Treasury yields and slows real activity.
+      # str (ISO 8601): Creation time
+      created_timestamp: "2024-06-19T10:00:00Z"
+      # bool: Triggers agentic pipeline
+      analysis_required: true
+
+  # Raw shocks structure
+  raw_shocks:
+    - # string: Unique shock node identifier
+      shock_id: "SHOCK_MONETARY_TIGHT"
+      # string: Foreign key to scenario
+      scenario_id: "SCEN_APP1_INFLATION"
+      # string: Parsed by Planner Agent
+      shock_description: "Restrictive monetary policy path lifting nominal yields"
+      # string: Categorical classification
+      shock_type: "monetary_policy"
+      # Int64 (nullable): Shock intensity scale 0-5 (unspecified in manuscript; implementation choice)
+      severity_level: 3
+
+  # Raw economic variables structure
+  raw_variable_concepts:
+    - # string: Unique variable node identifier
+      concept_id: "VAR_INFLATION"
+      # string: Foreign key to scenario
+      scenario_id: "SCEN_APP1_INFLATION"
+      # string: Parsed by Planner Agent for target variables
+      variable_name: "U.S. headline inflation"
+      # string: Math notation linking to LaTeX equations
+      variable_symbol: "π_t"
+      # string: Unit of measurement for output interpretation
+      measurement_unit: "percent_annual"
+      # boolean: Flag for primary analysis targets
+      is_target_variable: true
+
+  # Raw parent documents structure
+  raw_source_documents:
+    - # string: Unique document node identifier
+      doc_id: "DOC_MACRO_REV_2024"
+      # string: Document metadata
+      title: "Macroeconomic Review and Stress Testing Analysis"
+      # datetime64[ns]: Publication date for temporal context
+      publication_date: "2024-05-15"
+      # string: Categorical classification
+      document_type: "internal_report"
+      # string: Provenance metadata
+      source_institution: "Internal Economics Division"
+
+  # Raw text evidence structure (10 example rows)
+  raw_evidence_spans:
+    - # string: Unique evidence node identifier (cited by LLM)
+      evidence_id: "EV_1571"
+      # string: Foreign key to source document
+      doc_id: "DOC_MACRO_REV_2024"
+      # string: Core RAG text payload
+      span_text: >-
+        A more restrictive policy path usually lifts nominal yields,
+        although the term premium may vary by regime.
+      # string: Comma-separated tags for retrieval overlap scoring
+      tags: "monetary_policy,yields,term_premium"
+      # float64: Beta(9,1) draw used for retrieval ranking
+      synthetic_confidence: 0.935
+      # Int64: Character offset for provenance
+      char_start_position: 1024
+      # Int64: Character offset for provenance
+      char_end_position: 1132
+
+  # Raw temporal bounds structure
+  raw_temporal_facts:
+    - # string: Unique temporal fact node identifier
+      fact_id: "TF_1571_01"
+      # string: Foreign key to evidence span
+      evidence_id: "EV_1571"
+      # datetime64[ns, UTC]: Observation timestamp
+      observation_time: "2024-04-30T00:00:00Z"
+      # datetime64[ns, UTC]: Validity window start
+      validity_start: "2024-05-01T00:00:00Z"
+      # datetime64[ns, UTC]: Validity window end
+      validity_end: "2025-12-31T00:00:00Z"
+      # string: Audit trail context
+      temporal_description: "Yield response to policy path observed in Q2 2024 regime"
+
+  # Raw abstract model families structure
+  raw_models:
+    - # string: Unique model family node identifier
+      model_id: "MOD_DSGE_LITE"
+      # string: Human-readable name
+      model_name: "Dynamic Stochastic General Equilibrium (Lite)"
+      # string: Categorical filter for model selection
+      model_category: "structural"
+      # Int64: Complexity scale 1-5 (unspecified in manuscript; implementation choice)
+      complexity_level: 3
+
+  # Raw executable model specifications structure
+  raw_model_specifications:
+    - # string: Unique spec identifier (output by Model-Selection LLM)
+      spec_id: "MSPEC_DSGE_LITE_004"
+      # string: Foreign key to model family
+      model_id: "MOD_DSGE_LITE"
+      # string: Parsed by LLM for selection matching
+      spec_description: "3-equation New Keynesian model with AR(1) shocks and term structure."
+      # string: JSON payload bypassing LLM to solver
+      calibration_params_json: '{"sigma": 1.5, "beta": 0.99, "kappa": 0.15, "phi_pi": 1.5, "phi_y": 0.125, "rho_i": 0.8, "rho_g": 0.9, "rho_u": 0.85, "rho_v": 0.7, "rho_tau": 0.6}'
+
+  # Raw mathematical equations structure
+  raw_model_equations:
+    - # string: Unique equation node identifier
+      eq_id: "EQ_IS_CURVE"
+      # string: Foreign key to specification
+      spec_id: "MSPEC_DSGE_LITE_004"
+      # string: Semantic context for graph visualization
+      equation_name: "IS Curve"
+      # string: Raw LaTeX mapped to Python solver
+      latex_equation: 'y_t = E_t y_{t+1} - \frac{1}{\sigma}(i_t - E_t \pi_{t+1}) + g_t'
+      # Int64: Ordering for matrix arrangement in solver
+      equation_order: 1
+
+  # Raw model assumptions structure
+  raw_model_assumptions:
+    - # string: Unique assumption node identifier
+      assumption_id: "ASSUM_LINEAR"
+      # string: Foreign key to specification
+      spec_id: "MSPEC_DSGE_LITE_004"
+      # string: Parsed by LLM to verify appropriateness
+      assumption_text: "Model is linearized around a zero steady state."
+      # string: Categorical classification
+      assumption_type: "functional_form"
+
+  # Raw executable code mappings structure
+  raw_implementation_functions:
+    - # string: Unique implementation node identifier
+      impl_id: "IMPL_DSGE_RUNNER"
+      # string: Foreign key mapping spec to code
+      spec_id: "MSPEC_DSGE_LITE_004"
+      # string: Exact tool name validated by Computational Layer
+      execution_tool_name: "dsge_lite_runner"
+      # string: Math solver used for audit logs
+      solver_method: "Blanchard-Kahn"
+      # Int64: Simulation steps enforced uniformly
+      horizon_steps: 12
+      # string: Dynamic import path for tool execution
+      python_module_path: "computational_layer.dsge_lite"
+
+  # Raw bridge table for specs and variables
+  raw_model_variable_relationships:
+    - # string: Unique relationship record identifier
+      relationship_id: "REL_0001"
+      # string: Foreign key to specification
+      spec_id: "MSPEC_DSGE_LITE_004"
+      # string: Foreign key to variable concept
+      concept_id: "VAR_INFLATION"
+      # string: Graph edge type for pre-execution path filtering
+      relationship_type: "OUTPUTS_VARIABLE"
+      # boolean: Flag for endogenous determination
+      is_endogenous: true
+      # string: Econometric role context
+      variable_role: "forward_looking"
+
+
+# ==============================================================================
+# APPLICATION 1: DSGE-LITE MATHEMATICAL PARAMETERS
+# ==============================================================================
+# Calibrations for MSPEC_DSGE_LITE_004 (Standard Quarterly New Keynesian)
+# All parameters paper-exact from Section 3.4.1 and Appendix A.3
+
+dsge_lite_parameters:
+  # float: Intertemporal elasticity of substitution. Paper-exact.
+  sigma: 1.5
+  # float: Discount factor. Paper-exact.
+  beta: 0.99
+  # float: Slope of the New Keynesian Phillips Curve. Paper-exact.
+  kappa: 0.15
+  # float: Taylor rule coefficient on inflation. Paper-exact.
+  phi_pi: 1.5
+  # float: Taylor rule coefficient on the output gap. Paper-exact.
+  phi_y: 0.125
+  # float: Interest rate smoothing parameter in the Taylor Rule. Paper-exact.
+  rho_i: 0.8
+  # float: Persistence of the demand shock (g_t) AR(1) process. Paper-exact.
+  rho_g: 0.9
+  # float: Persistence of the cost-push shock (u_t) AR(1) process. Paper-exact.
+  rho_u: 0.85
+  # float: Persistence of the monetary policy shock (v_t) AR(1) process. Paper-exact.
+  rho_v: 0.7
+  # float: Persistence of the term premium shock (tau_t) AR(1) process. Paper-exact.
+  rho_tau: 0.6
+  # float: Standard deviation of the demand shock innovation. Paper-exact.
+  std_eps_g: 0.15
+  # float: Standard deviation of the cost-push shock innovation. Paper-exact.
+  std_eps_u: 0.10
+  # float: Standard deviation of the monetary policy shock innovation. Paper-exact.
+  std_eps_v: 0.20
+  # float: Standard deviation of the term premium shock innovation. Paper-exact.
+  std_eps_tau: 0.05
+  # int: 12-step synthetic model path as dictated by Appendix C, Table 16. Paper-exact.
+  horizon_steps: 12
+
+
+# ==============================================================================
+# APPLICATION 2: REGIME-SWITCHING MATHEMATICAL PARAMETERS
+# ==============================================================================
+# Calibrations for MSPEC_REGIME_SWITCHING_005 (2-State MS-VAR)
+# Paper-exact parameters where provided; documented implementation choices where unspecified
+
+regime_switching_parameters:
+  # int: Number of Markov regimes. Paper-exact.
+  n_regimes: 2
+  # float: Probability of remaining in the normal regime. Paper-exact.
+  p11: 0.95
+  # float: Probability of remaining in the stress regime. Paper-exact.
+  p22: 0.85
+  # int: VAR lag order for the state equation Y_t = c_St + A_1,St Y_t-1 + eps_St,t.
+  # Paper-implied but not explicitly stated.
+  lag_order: 1
+  # list[float]: Intercepts for normal regime [CRE_price, credit_spread, funding_spread, deposit_outflow]. Paper-exact.
+  state_1_intercepts:
+    - 0.0
+    - 1.5
+    - 0.5
+    - 0.5
+  # list[float]: Intercepts for stress regime. Paper-exact.
+  state_2_intercepts:
+    - -2.0
+    - 8.0
+    - 4.0
+    - 3.0
+  # NOTE: The paper does NOT provide full A_1,St autoregressive matrices or full Sigma_St
+  # covariance matrices. The following are rational implementation choices based on
+  # standard MS-VAR practice.
+  #
+  # list[list[float]]: Covariance matrix of innovations in the normal regime
+  # (diagonal assumption; unspecified in manuscript)
+  state_1_var_cov_matrix:
+    - [0.5, 0.0, 0.0, 0.0]
+    - [0.0, 0.2, 0.0, 0.0]
+    - [0.0, 0.0, 0.1, 0.0]
+    - [0.0, 0.0, 0.0, 0.1]
+  # list[list[float]]: Covariance matrix of innovations in the stress regime
+  # (amplified volatility; diagonal assumption; unspecified in manuscript)
+  state_2_var_cov_matrix:
+    - [4.0, 0.0, 0.0, 0.0]
+    - [0.0, 2.0, 0.0, 0.0]
+    - [0.0, 0.0, 1.5, 0.0]
+    - [0.0, 0.0, 0.0, 1.0]
+  # list[list[float]]: A_1,1 matrix for normal regime
+  # (unspecified in manuscript; rational stable AR coefficients)
+  state_1_autoregressive_matrix:
+    - [0.85, 0.0, 0.0, 0.0]
+    - [0.0, 0.80, 0.0, 0.0]
+    - [0.0, 0.0, 0.75, 0.0]
+    - [0.0, 0.0, 0.0, 0.70]
+  # list[list[float]]: A_1,2 matrix for stress regime
+  # (unspecified in manuscript; higher persistence in stress)
+  state_2_autoregressive_matrix:
+    - [0.90, 0.0, 0.0, 0.0]
+    - [0.0, 0.88, 0.0, 0.0]
+    - [0.0, 0.0, 0.85, 0.0]
+    - [0.0, 0.0, 0.0, 0.82]
+  # int: 12-step synthetic model path. Paper-exact.
+  horizon_steps: 12
+
+
+# ==============================================================================
+# APPLICATION 2: BANK STRESS ACCOUNTING PARAMETERS
+# ==============================================================================
+# Basel III/CCAR Mappings for Table 13 Bank Metrics
+# All parameters paper-exact from Section 3.4.2
+
+bank_stress_parameters:
+  # float: PD Mapping intercept. Paper-exact.
+  alpha_0: -2.5
+  # float: PD Mapping sensitivity to CRE price declines. Paper-exact.
+  alpha_1: -0.1
+  # float: PD Mapping sensitivity to credit spread widening. Paper-exact.
+  alpha_2: 0.02
+  # float: LGD Mapping baseline. Paper-exact.
+  gamma_0: 0.45
+  # float: LGD Mapping sensitivity to CRE price declines. Paper-exact.
+  gamma_1: -0.02
+  # float: Exposure at Default. Paper-exact.
+  EAD: 100.0
+  # float: Market Loss: Duration of market assets in years. Paper-exact.
+  D_A: 5.5
+  # float: Market Loss: Volume of marketable assets. Paper-exact.
+  A_mkt: 50.0
+  # float: Market Loss: Spread sensitivity coefficient. Paper-exact.
+  kappa_spr: 2.0
+  # float: NII Change baseline. Paper-exact.
+  delta_0: 0.0
+  # float: NII Change sensitivity to policy rate changes. Paper-exact.
+  delta_1: 0.4
+  # float: NII Change sensitivity to funding spread widening. Paper-exact.
+  delta_2: 0.3
+  # float: NII Change sensitivity to deposit outflow rate. Paper-exact.
+  delta_3: 0.1
+  # float: CET1 Capital previous period baseline. Paper-exact.
+  Capital_prev: 15.0
+  # float: Risk-Weighted Assets previous period baseline. Paper-exact.
+  RWA_prev: 100.0
+  # float: LCR High-Quality Liquid Assets previous period. Paper-exact.
+  HQLA_prev: 30.0
+  # float: LCR expected outflows previous period. Paper-exact.
+  Outflows_prev: 20.0
+  # float: LCR expected inflows previous period. Paper-exact.
+  Inflows_prev: 5.0
+
+
+# ==============================================================================
+# AGENTIC RETRIEVAL AND GRAPH SEARCH PARAMETERS
+# ==============================================================================
+# Knowledge Graph Constraints and RAG Settings (Section 3.1, Appendix C)
+
+retrieval_graph_parameters:
+  # int: Limits text retrieval to 6 spans per application. Paper-exact (Tables 6, 10).
+  text_evidence_top_k: 6
+  # int: Limits graph-retrieved model specs before selection to 12.
+  # Unspecified in manuscript; rational implementation choice.
+  model_context_top_k: 12
+  # bool: Prohibits unconstrained graph traversal. Paper-exact (Section 2.3).
+  allow_neighborhood_expansion: false
+  # bool: Enforces explicit path queries rather than generic lookups. Paper-exact (Section 3.1).
+  require_task_specific_queries: true
+  # int: Maximum edge depth for graph traversals from Scenario node.
+  # Unspecified in manuscript; rational bounded-depth choice.
+  max_path_depth: 5
+  # bool: Ensures atomic graph mutations for ModelRun and ModelOutputPoint nodes.
+  # Paper-exact (Step 8, Algorithm 1).
+  enable_write_back_transactions: true
+  # NOTE: The paper states "rank by tag overlap with scenario, then by synthetic confidence
+  # score" but does NOT specify whether this is lexicographic ordering or weighted
+  # combination. The following implements weighted combination (50/50):
+  #
+  # float: Weight for tag overlap in text retrieval scoring.
+  # Unspecified in manuscript; 50/50 weighted interpretation.
+  tag_overlap_weight: 0.5
+  # float: Weight for synthetic confidence score in text retrieval scoring.
+  # Unspecified in manuscript; 50/50 weighted interpretation.
+  confidence_score_weight: 0.5
+
+
+# ==============================================================================
+# COMPUTATIONAL SOLVER PARAMETERS
+# ==============================================================================
+# Numerical Solver Settings for External Mathematical Layer (Step 7)
+
+computational_solver_parameters:
+  # int: Fixed 12-step horizon for all mathematical executions. Paper-exact.
+  model_horizon_steps: 12
+  # string: NumPy dtype enforced across all mathematical operations. Standard engineering practice.
+  numerical_precision: "float64"
+  # int: Seed for drawing shock innovations in DSGE and MS-VAR simulations. Paper-exact.
+  random_seed: 42
+  # float: Convergence tolerance for generalized eigenvalues in Blanchard-Kahn conditions.
+  # Unspecified in manuscript; standard numerical choice.
+  bk_tolerance: 1.0e-8
+  # float: Convergence tolerance for the Markov regime probabilities.
+  # Unspecified in manuscript; standard numerical choice.
+  hamilton_filter_tolerance: 1.0e-8
+  # int: Maximum iterations before a solver failure is raised.
+  # Unspecified in manuscript; standard numerical choice.
+  max_solver_iterations: 1000
+  # bool: Halt execution if Blanchard-Kahn conditions fail. Paper-exact (Algorithm 2).
+  enforce_determinacy: true
+
+
+# ==============================================================================
+# AGENTIC PROMPT TEMPLATES
+# ==============================================================================
+# High-Fidelity LLM Prompt Schemas for Pipeline Orchestration
+# All templates paper-exact from Section 3.6
+
+prompt_templates:
+
+  # Planner Agent prompt: decomposes scenario into structured analysis plan
+  planner_agent_prompt: |
+    ### Job Description
+    You are the Planner Agent in an AI Economist framework. Your role is to read an economic scenario and formulate a structured analysis plan to guide downstream retrieval and model selection. You do not select models yourself; you define the mathematical and economic requirements.
+
+    ### Skills
+    - Macroeconomic theory and scenario decomposition
+    - Econometric model requirement analysis
+    - Structured data extraction
+
+    ### Python Scripts
+    scenario = {scenario}
+
+    ### Output Contract
+    Return ONLY a valid JSON object with the following keys:
+    - "economic_objective": string describing the primary macroeconomic goal.
+    - "target_variables": list of strings representing key economic indicators.
+    - "relevant_shocks": list of strings representing exogenous stressors.
+    - "model_selection_objective": string describing the mathematical requirements for the model.
+    Do not include any text outside the JSON object.
+
+    ### Task
+    Given the scenario above, produce the analysis plan.
+
+  # Model-Selection Agent prompt: selects executable spec and forms execution request tuple
+  model_selection_agent_prompt: |
+    ### Job Description
+    You are the Model-Selection Agent in an AI Economist framework. Your role is to select an appropriate executable model specification from a graph-retrieved context based on an economic scenario and analysis plan. You must map this selection to a structured execution request tuple. You must not invent models; select only from the provided context.
+
+    ### Skills
+    - Econometric model evaluation and matching
+    - Knowledge graph context parsing
+    - Structured execution request formulation
+
+    ### Python Scripts
+    scenario = {scenario}
+    analysis_plan = {plan}
+    model_context = {model_context}
+
+    ### Output Contract
+    Return ONLY a valid JSON object with the following keys:
+    - "model_specification": string (exact spec_id from context)
+    - "model_family": string
+    - "implementation_family": string (must match an available executable family)
+    - "execution_tool": string (e.g., "dsge_lite_runner")
+    - "expected_outputs": list of strings
+    Do not include any text outside the JSON object. Do not invent models not present in the context.
+
+    ### Task
+    Evaluate the model context against the plan and scenario. Output the structured execution request.
+
+  # Report Generator (LLM-only condition): narrative from scenario alone; no evidence or models
+  report_gen_llm_only_prompt: |
+    ### Job Description
+    You are the Report Generator Agent operating in the LLM-only condition. Your role is to write an economist-style narrative based solely on a provided scenario. You have no external evidence or models.
+
+    ### Skills
+    - Macroeconomic narrative generation
+    - Economic coherence maintenance
+
+    ### Python Scripts
+    scenario = {scenario}
+
+    ### Output Contract
+    Output a coherent economic report in plain text. Do not use external evidence or mathematical models. Do not claim any model was executed.
+
+    ### Task
+    Write a narrative based ONLY on the scenario provided.
+
+  # Report Generator (RAG-only condition): evidence-grounded narrative; no model execution claims
+  report_gen_rag_only_prompt: |
+    ### Job Description
+    You are the Report Generator Agent operating in the RAG-only condition. Your role is to write an economic narrative grounded in retrieved text evidence.
+
+    ### Skills
+    - Evidence synthesis and citation
+    - Narrative constraint enforcement
+
+    ### Python Scripts
+    scenario = {scenario}
+    evidence_spans = {evidence_spans}
+
+    ### Output Contract
+    Output an economic report in plain text. Cite evidence using their IDs (e.g., EV_1161).
+    CRITICAL CONSTRAINT: You must NOT claim that a mathematical model has been executed. Limit claims to the provided textual evidence.
+
+    ### Task
+    Write a narrative using the scenario and the retrieved evidence. Adhere strictly to the critical constraint.
+
+  # Report Generator (Model-grounded GraphRAG condition): full information set; strict separation
+  report_gen_model_grounded_prompt: |
+    ### Job Description
+    You are the Report Generator Agent operating in the Model-grounded GraphRAG condition. Your role is to generate a traceable economic report linking narrative to retrieved evidence, graph paths, and executed mathematical model outputs.
+
+    ### Skills
+    - Model-output interpretation
+    - Graph path tracing and audit generation
+    - Separation of qualitative interpretation and quantitative facts
+
+    ### Python Scripts
+    scenario = {scenario}
+    evidence_spans = {evidence_spans}
+    pre_run_paths = {pre_run_paths}
+    model_specification = {model_specification}
+    execution_request = {execution_request}
+    model_run = {model_run}
+    model_output_table = {model_output_table}
+    post_run_paths = {post_run_paths}
+
+    ### Output Contract
+    Output an economic report in plain text.
+    CRITICAL INSTRUCTION: You must distinguish qualitative interpretation from model-dependent statements. Explicitly state which parts of your analysis are narrative interpretation and which parts are directly traceable to the executed model outputs. Ensure the report exposes enough information to trace the source of its claims (Audit criterion).
+
+    ### Task
+    Synthesize the inputs into a model-grounded report. Ensure strict separation of qualitative and quantitative claims as mandated.
+
+  # Judge Agent prompt: strict 0-5 rubric evaluation; enforces model_grounding logic gate
+  judge_agent_prompt: |
+    ### Job Description
+    You are the Judge Agent in an AI Economist framework. Your role is to evaluate a generated economic report against a ground-truth information set using a strict 0-5 scoring rubric.
+
+    ### Skills
+    - Rigorous evaluation and fact-checking
+    - Rule-based scoring and audit verification
+    - Strict constraint enforcement
+
+    ### Python Scripts
+    condition_information_set = {condition_information_set}
+    generated_report = {generated_report}
+
+    ### Output Contract
+    Return ONLY a valid JSON object with integer scores (0-5) for the following keys:
+    - "evidence_grounding": Report uses retrieved evidence rather than unsupported claims.
+    - "graph_reasoning": Report uses graph paths or relationships when supplied.
+    - "model_grounding": Report is linked to a selected model spec AND executed output. NOTE: A high score requires an executed model object/output. Mentioning a model name without execution is insufficient and MUST receive a 0.
+    - "numerical_discipline": Numerical statements are consistent with supplied info.
+    - "economic_coherence": Economic interpretation is internally consistent.
+    - "audit": Report exposes enough info to trace the source of claims.
+    Do not include any text outside the JSON object.
+
+    ### Task
+    Evaluate the generated report against the condition information set. Apply the rubric strictly, paying special attention to the model_grounding constraint.
+
+
+# ==============================================================================
+# NETWORK ARCHITECTURE AND INFERENCE PARAMETERS
+# ==============================================================================
+# LLM Transformer Architecture and Inference-Time Compute Settings
+# NOTE: These are for reference/documentation only; not operationally required for reproduction.
+# Parameters sourced from public Llama 3.1 8B documentation, not the paper.
+
+network_architecture_parameters:
+  # string: Architecture family. Unspecified in manuscript; from Llama 3.1 public spec.
+  model_type: "llama"
+  # int: Transformer decoder blocks. Unspecified in manuscript; from Llama 3.1 8B spec.
+  num_hidden_layers: 32
+  # int: Latent dimension of hidden states. Unspecified in manuscript; from Llama 3.1 8B spec.
+  hidden_size: 4096
+  # int: Multi-head attention query heads. Unspecified in manuscript; from Llama 3.1 8B spec.
+  num_attention_heads: 32
+  # int: Grouped-query attention heads for KV cache optimization.
+  # Unspecified in manuscript; from Llama 3.1 8B spec.
+  num_key_value_heads: 8
+  # int: SwiGLU feed-forward network inner dimension.
+  # Unspecified in manuscript; from Llama 3.1 8B spec.
+  intermediate_size: 14336
+  # int: Tokenizer vocabulary size. Unspecified in manuscript; from Llama 3.1 8B spec.
+  vocab_size: 128256
+  # float: Rotary positional embedding base frequency.
+  # Unspecified in manuscript; from Llama 3.1 8B spec.
+  rope_theta: 500000.0
+  # int: Maximum sequence length for input tokens.
+  # Unspecified in manuscript; from Llama 3.1 8B spec.
+  max_context_window: 128000
+  # bool: Utilize Key-Value caching for sequential agentic calls. Standard practice.
+  kv_cache_enabled: true
+
+  # Conceptual mapping as model is inference-only locally
+  network_training_parameters:
+    # string: No fine-tuning performed in study
+    training_status: "pretrained"
+    # string: Inference compute precision. Standard practice.
+    precision_dtype: "float16"
+    # Standard local quantization for 8B models. Unspecified in manuscript.
+    quantization_config:
+      # string: Quantization method
+      quant_method: "bitsandbytes"
+      # bool: Load model in 4-bit precision
+      load_in_4bit: true
+
+
+# ==============================================================================
+# PLOT CONSTRUCTION PARAMETERS
+# ==============================================================================
+# Visualization Settings for Graph Paths and Model Outputs (Figures 1-7)
+# NOTE: These enable figure reproduction but are not required for reproducing the study's findings.
+# All parameters unspecified in manuscript; implementation choices for aesthetic replication.
+
+plot_construction_parameters:
+  # string: Fixed-size circular markers for graph nodes.
+  # Unspecified in manuscript; standard matplotlib choice.
+  graph_node_marker: "o"
+  # int: Visual size of nodes in GraphRAG path plots. Unspecified in manuscript.
+  graph_node_marker_size: 50
+  # string: Layout for rendering post-ModelRun paths. Unspecified in manuscript.
+  graph_layout_algorithm: "spring"
+  # bool: Labels shortened and layout coordinates assigned for readability.
+  # Unspecified in manuscript.
+  graph_label_shortening: true
+  # bool: No economic nodes/relationships added visually post-hoc.
+  # Unspecified in manuscript.
+  graph_add_economic_nodes: false
+  # string: X-axis representing the 12-step horizon. Unspecified in manuscript.
+  model_path_x_axis: "time_step"
+  # list[int]: Horizon bounds. Unspecified in manuscript.
+  model_path_x_axis_limit:
+    - 0
+    - 12
+  # string: Y-axis label explicitly defined in Section 4. Unspecified in manuscript.
+  model_path_y_axis: "synthetic_macro_financial_units"
+  # string: Bar chart for discrete stress metrics. Unspecified in manuscript.
+  bank_metrics_plot_type: "bar"
+  # string: Grouped bar chart for 0-5 criteria across conditions. Unspecified in manuscript.
+  judge_scores_plot_type: "grouped_bar"
+  # int: Publication quality resolution. Unspecified in manuscript.
+  figure_dpi: 300
+  # Color scheme for three conditions. Unspecified in manuscript; standard matplotlib defaults.
+  color_palette:
+    # string: Standard matplotlib blue
+    llm_only: "#1f77b4"
+    # string: Standard matplotlib orange
+    rag_only: "#ff7f0e"
+    # string: Standard matplotlib green
+    model_grounded: "#2ca02c"
+
+
+# ==============================================================================
+# ESSENTIAL METHODOLOGICAL NOTES
+# ==============================================================================
+# Architectural Constraints and Epistemic Guarantees
+
+methodological_notes:
+  # string: The LLM is structurally prohibited from generating quantitative model-dependent
+  # claims. Numerical paths and stress metrics are produced strictly by validated
+  # computational functions external to the LLM.
+  llm_quantitative_prohibition: >-
+    The LLM is structurally prohibited from generating quantitative
+    model-dependent claims. Numerical paths and stress metrics are produced
+    strictly by validated computational functions external to the LLM.
+
+  # string: Text spans support narrative statements; model specifications define what can
+  # be executed; implementation functions compute the output; model-run and output-point
+  # nodes record what was computed. This prevents RAG-only conditions from acting as
+  # model-selection conditions.
+  graph_separation_principle: >-
+    Text spans support narrative statements; model specifications define what
+    can be executed; implementation functions compute the output; model-run and
+    output-point nodes record what was computed. This prevents RAG-only
+    conditions from acting as model-selection conditions.
+
+  # string: Local LLM (llama3.1:8b) is run at temperature 0 with seed 42. All
+  # mathematical shock draws use numpy.random.default_rng(seed=42).
+  determinism_enforcement: >-
+    Local LLM (llama3.1:8b) is run at temperature 0 with seed 42. All
+    mathematical shock draws use numpy.random.default_rng(seed=42).
+
+  # string: Model-grounded GraphRAG reports must explicitly distinguish qualitative
+  # interpretation from model-dependent statements. Mentioning a model name without an
+  # executed ModelRun object results in a Judge Agent model_grounding score of 0.
+  condition_specific_grounding: >-
+    Model-grounded GraphRAG reports must explicitly distinguish qualitative
+    interpretation from model-dependent statements. Mentioning a model name
+    without an executed ModelRun object results in a Judge Agent
+    model_grounding score of 0.
+
+  # string: The knowledge graph is purged (clear_graph_on_init) before each application
+  # run to ensure post-run paths reflect only the current application, preventing state
+  # leakage across experimental conditions.
+  graph_state_isolation: >-
+    The knowledge graph is purged (clear_graph_on_init) before each
+    application run to ensure post-run paths reflect only the current
+    application, preventing state leakage across experimental conditions.
+
+  # string: The paper does not provide full autoregressive matrices A_1,St or full
+  # covariance matrices Sigma_St for the MS-VAR. Diagonal covariance matrices and
+  # diagonal autoregressive matrices are used as rational implementation choices. Exact
+  # numeric replication of Tables 12 and 13 is not guaranteed without these missing matrices.
+  ms_var_matrix_limitation: >-
+    The paper does not provide full autoregressive matrices A_1,St or full
+    covariance matrices Sigma_St for the MS-VAR. Diagonal covariance matrices
+    and diagonal autoregressive matrices are used as rational implementation
+    choices. Exact numeric replication of Tables 12 and 13 is not guaranteed
+    without these missing matrices.
+
+  # string: The paper states "rank by tag overlap with scenario, then by synthetic
+  # confidence score" but does not specify lexicographic vs. weighted combination. A
+  # 50/50 weighted combination is implemented. If retrieval outputs do not match
+  # reported top-6 evidence IDs, tag schema reverse-engineering or hard-coding target
+  # outputs may be required.
+  retrieval_ranking_interpretation: >-
+    The paper states 'rank by tag overlap with scenario, then by synthetic
+    confidence score' but does not specify lexicographic vs. weighted
+    combination. A 50/50 weighted combination is implemented. If retrieval
+    outputs do not match reported top-6 evidence IDs, tag schema
+    reverse-engineering or hard-coding target outputs may be required.
