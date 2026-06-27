@@ -1,0 +1,243 @@
+# ==============================================================================
+# AI ECONOMIST AGENT — Python Dependency Manifest
+# requirements.txt
+#
+# Project  : AI Economist Agent: An Agentic Framework for Model-Grounded
+#             Economic Analysis with RAG, Knowledge Graphs, and Large
+#             Language Models
+# Paper    : Kato, M. (2026). arXiv:2606.20041
+# Author   : CS Chirinda
+# License  : MIT
+# Version  : 1.0.0
+#
+# Python   : >= 3.12  (validated on CPython 3.12.3)
+# pip      : >= 24.0
+# Platform : Linux x86-64 / macOS arm64 / Windows x86-64 (CPU or CUDA)
+#
+# Usage
+# -----
+#   # Create and activate a dedicated virtual environment (mandatory):
+#   python3 -m venv .venv
+#   source .venv/bin/activate          # Linux / macOS
+#   .venv\Scripts\activate             # Windows PowerShell
+#
+#   # Install all dependencies at exact pinned versions:
+#   pip install --require-hashes --no-deps -r requirements.txt
+#   # OR, for environments that cannot use --require-hashes:
+#   pip install -r requirements.txt
+#
+# Pinning Strategy
+# ----------------
+#   All packages are pinned with == (exact version) to guarantee byte-for-byte
+#   reproducibility of the numerical results reported in the paper. The study
+#   enforces deterministic decoding (temperature=0, seed=42) and deterministic
+#   PRNG draws (numpy.random.default_rng(seed=42)); any silent float-precision
+#   change induced by a library upgrade would silently corrupt reproducibility.
+#
+#   Transitive dependencies are pinned explicitly (not left implicit) because
+#   pip's dependency resolver is not guaranteed to re-select the same transitive
+#   versions across pip releases or platform configurations. Explicit pinning of
+#   the full closure is the only method that guarantees hermetic reproduction.
+#
+# Dependency Tiers
+# ----------------
+#   TIER 1 : Direct dependencies — imported by name in ai_economist_agent.py
+#   TIER 2 : Transitive dependencies — required by Tier-1 packages; pinned
+#             explicitly for hermeticity
+#
+# External Runtime Requirements (NOT pip-installable; install separately)
+# -----------------------------------------------------------------------
+#   Ollama >= 0.3.0   : Local LLM inference server exposing the OpenAI-
+#                        compatible endpoint at http://localhost:11434/v1.
+#                        Install: https://ollama.com/download
+#                        Pull model: ollama pull llama3.1:8b
+#   Neo4j  >= 5.x     : Graph database server. The Python neo4j driver
+#                        (pinned below) connects to a running Neo4j instance.
+#                        Install: https://neo4j.com/download/
+#                        Default URI: bolt://localhost:7687
+#
+# Discipline Mapping (per paper Appendix C)
+# ------------------------------------------
+#   Discipline 1 — Inference Engineering / MLOps
+#       requests, psutil
+#   Discipline 2 — Graph Database Architecture
+#       neo4j  [+ pytz transitive]
+#   Discipline 3 — Synthetic Data Science / Monte Carlo
+#       numpy, scipy  [scipy.stats.beta for Beta(9,1) confidence score draws]
+#   Discipline 4 — Macroeconometrics / DSGE Modeling
+#       numpy, scipy  [scipy.linalg.solve_discrete_are for Blanchard-Kahn]
+#   Discipline 5 — Financial Econometrics / Regime-Switching (MS-VAR)
+#       numpy, scipy  [numpy.linalg.eig for eigenvalue decomposition]
+#   Discipline 6 — Banking Regulation / Stress Test Accounting
+#       numpy, scipy  [scipy.special.expit for logistic PD mapping]
+#   Discipline 7 — NLP / Prompt Engineering
+#       requests  [HTTP POST to Ollama OpenAI-compatible endpoint]
+#   Discipline 8 — Agentic System Design
+#       pydantic  [strict JSON schema validation of all LLM agent outputs]
+#   Discipline 9 — Systems Validation / Statistical Verification
+#       pandas, numpy, scipy
+#
+# ==============================================================================
+
+
+# ==============================================================================
+# TIER 1: DIRECT DEPENDENCIES
+# Packages imported explicitly in ai_economist_agent.py
+# ==============================================================================
+
+# ── Scientific Computing Stack ─────────────────────────────────────────────────
+
+# NumPy: Foundation for all vectorised mathematical operations.
+# Used for: PRNG initialisation (numpy.random.default_rng(seed=42)),
+# matrix algebra (Blanchard-Kahn eigenvalue decomposition), state-space
+# simulation, and all float64 array operations mandated by
+# computational_solver_parameters.numerical_precision = "float64".
+# NOTE: NumPy 2.x removes legacy type aliases (np.bool, np.int, np.float).
+# The codebase must NOT use these deprecated aliases; use np.bool_, np.int64,
+# np.float64 exclusively. Validated on 2.4.4.
+# Disciplines: 3, 4, 5, 6, 9
+numpy==2.4.4
+
+# pandas: Tabular data management for the evidence corpus (2,500 rows),
+# model specification catalog (420 specs), and temporal fact tables.
+# Used for: schema validation via pandas.api.types (ptypes), DataFrame
+# construction for evidence retrieval ranking, and ModelOutputPoint
+# time-series extraction across the 12-step horizon.
+# Disciplines: 3, 8, 9
+pandas==3.0.2
+
+# SciPy: Advanced scientific computation.
+# Used for:
+#   scipy.stats.beta(a=9, b=1)  — Beta distribution for synthetic confidence
+#                                  score generation (Discipline 3, Table 6).
+#   scipy.linalg.solve_discrete_are — Algebraic Riccati equation for DSGE
+#                                      state-space solution (Discipline 4).
+#   scipy.linalg.ordqz          — Ordered QZ decomposition for
+#                                  Blanchard-Kahn generalised eigenvalue
+#                                  verification (Discipline 4).
+#   scipy.special.expit         — Logistic sigmoid for PD mapping:
+#                                  PD_t = expit(α₀ + α₁·p_CRE + α₂·s_credit)
+#                                  (Discipline 6).
+# Disciplines: 3, 4, 5, 6
+scipy==1.17.1
+
+# ── HTTP Client ────────────────────────────────────────────────────────────────
+
+# requests: Synchronous HTTP client for all LLM agent calls.
+# Used for: POST requests to the Ollama OpenAI-compatible endpoint
+# (http://localhost:11434/v1/chat/completions) with JSON-serialised
+# payloads enforcing temperature=0, seed=42, and max_tokens=2048.
+# All six agent calls (Planner, Model-Selection, three Report Generators,
+# Judge) route through requests.Session for connection reuse.
+# Discipline: 1, 7, 8
+requests==2.33.1
+
+# ── System Introspection ────────────────────────────────────────────────────────
+
+# psutil: Cross-platform system and process utilities.
+# Used for: runtime environment fingerprinting (CPU count, RAM, GPU memory)
+# required by the cryptographic audit hash of the execution environment
+# (hashlib + platform + psutil → SHA-256 environment digest for regulatory
+# auditability). Also used for monitoring memory pressure during sequential
+# agentic KV-cache calls (Discipline 1).
+# Disciplines: 1, 9
+psutil==7.2.2
+
+# ── Graph Database Driver ───────────────────────────────────────────────────────
+
+# neo4j: Official Neo4j Python driver (Bolt protocol).
+# Used for: all Knowledge Graph operations — atomic graph reset (MATCH (n)
+# DETACH DELETE n), node and relationship creation, pre-execution Cypher
+# path traversal (Scenario→VariableConcept→ModelSpecification→
+# ImplementationFunction), atomic ModelRun/ModelOutputPoint write-back,
+# and post-execution diagnostic path inspection.
+# Imports used in source: Driver, Transaction, Record, neo4j.exceptions,
+#   neo4j.graph.Path, neo4j.graph.Node, neo4j.graph.Relationship.
+# NOTE: neo4j 6.x driver requires Neo4j server >= 5.x. The driver exposes
+# read-committed isolation semantics by default, satisfying the graph-state
+# isolation requirement of Discipline 2.
+# Discipline: 2
+neo4j==6.2.0
+
+# ── Data Validation ────────────────────────────────────────────────────────────
+
+# pydantic: Runtime data validation and settings management (v2 API).
+# Used for: strict JSON schema enforcement on all LLM agent outputs.
+# Every agent response (Planner JSON, Model-Selection execution request
+# tuple, Judge scoring JSON) is parsed against a Pydantic BaseModel before
+# being passed downstream in the DAG. Prevents type coercion errors and
+# enforces the structured execution request tuple r_s = (spec_id,
+# execution_tool, expected_outputs).
+# NOTE: This pin is for Pydantic v2 (2.x). The v2 API uses field_validator
+# (not the v1 @validator decorator). The codebase must use v2 idioms.
+# Discipline: 8
+pydantic==2.13.4
+
+
+# ==============================================================================
+# TIER 2: TRANSITIVE DEPENDENCIES
+# Required by Tier-1 packages; pinned explicitly for hermetic reproducibility.
+# These are NOT imported directly in ai_economist_agent.py but must be
+# installed at these exact versions to avoid silent behavioural drift.
+# ==============================================================================
+
+# ── pandas transitive ──────────────────────────────────────────────────────────
+
+# python-dateutil: Date/time parsing and arithmetic.
+# Required by: pandas (datetime column parsing and offset arithmetic)
+# Used indirectly for: ISO 8601 timestamp parsing of TemporalFact
+# validity windows (observation_time, validity_start, validity_end).
+python-dateutil==2.9.0.post0
+
+# ── requests transitive ────────────────────────────────────────────────────────
+
+# certifi: Mozilla CA bundle for TLS certificate verification.
+# Required by: requests
+# Note: Although LLM calls target localhost (no TLS), certifi is a hard
+# dependency of requests and must be present for import resolution.
+certifi==2026.2.25
+
+# charset-normalizer: Character encoding detection for HTTP response bodies.
+# Required by: requests (fallback encoding detection when charset absent)
+charset-normalizer==3.4.6
+
+# idna: Internationalised Domain Names in Applications (RFC 5891).
+# Required by: requests (URL hostname normalisation)
+idna==3.11
+
+# urllib3: HTTP connection pooling underlying requests.Session.
+# Required by: requests
+# The Session object used for sequential Ollama agent calls relies on
+# urllib3 connection pool reuse to prevent socket exhaustion during the
+# 6-agent orchestration sequence.
+urllib3==2.6.3
+
+# ── neo4j transitive ───────────────────────────────────────────────────────────
+
+# pytz: IANA timezone database for datetime-aware operations.
+# Required by: neo4j (Bolt protocol temporal type serialisation)
+# Used indirectly for: UTC-aware datetime stamping of ModelRun nodes
+# written back to the Knowledge Graph.
+pytz==2026.2
+
+# ── pydantic transitive ────────────────────────────────────────────────────────
+
+# annotated-types: PEP 593 Annotated type constraint primitives.
+# Required by: pydantic (v2 field constraint annotations, e.g. Gt, Lt, Ge)
+annotated-types==0.7.0
+
+# pydantic-core: Rust-compiled validation engine backing pydantic v2.
+# Required by: pydantic
+# Performance-critical: all LLM JSON validation is dispatched to this
+# compiled core. Pin must match pydantic exactly; a mismatch raises
+# ImportError at startup.
+pydantic-core==2.46.4
+
+# typing-extensions: Backport of newer typing module features.
+# Required by: pydantic, pydantic-core
+# Provides: TypeAlias, Self, Unpack, ParamSpec for pydantic v2 internals.
+typing-extensions==4.15.0
+
+# typing-inspection: Runtime inspection of typing constructs.
+# Required by: pydantic (v2 model field introspection at schema build time)
+typing-inspection==0.4.2
